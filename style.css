@@ -1,0 +1,459 @@
+@font-face {
+    font-family: 'Goudy Old Style';
+    src: local('Goudy Old Style');
+    font-stretch: 102%;
+}
+
+/* 全局样式 */
+:root {
+    --primary-bg: #121212;
+    --secondary-bg: #1e1e1e;
+    --accent-color: #c0c0c0;
+    --accent-color-hover: #ffffff;
+    --text-color: #e0e0e0;
+    --gradient-start: #808080;
+    --gradient-end: #404040;
+    --font-heading: 'Goudy Old Style', serif;
+    --font-body: 'Goudy Old Style', serif;
+}
+
+/* 英文文本样式 */
+:lang(en) {
+    font-family: var(--font-body);
+    font-stretch: 102%;
+    letter-spacing: 600;
+    line-height: 86%;
+    text-transform: lowercase;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--primary-bg);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    font-size: 5px;
+    line-height: 86%;
+    letter-spacing: 600;
+    overflow-x: hidden;
+}
+
+/* 鼠标跟随效果 */
+.cursor-follower {
+    width: 20px;
+    height: 20px;
+    background: rgba(192, 192, 192, 0.2);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+}
+
+/* 导航栏 */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.logo {
+    pointer-events: auto;
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 600;
+    line-height: 86%;
+    font-stretch: 102%;
+    background: linear-gradient(45deg, var(--accent-color), var(--accent-color-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(192, 192, 192, 0.2);
+}
+
+.nav-links {
+    pointer-events: auto;
+}
+
+.nav-links .draggable {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    letter-spacing: 600;
+    line-height: 86%;
+    text-transform: uppercase;
+    cursor: move;
+    user-select: none;
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.nav-links .draggable:hover {
+    color: var(--accent-color-hover);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.nav-links .draggable.dragging {
+    opacity: 0.8;
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* 首屏区域 */
+.hero {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.hero-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.hero:hover .hero-background img {
+    transform: scale(1.05);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        rgba(18, 18, 18, 0.9),
+        rgba(30, 30, 30, 0.7)
+    );
+}
+
+.title-a, .title-b {
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    padding: 2rem;
+    transform: scale(0.8) translateY(-20px);
+}
+
+.title-a.active, .title-b.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
+}
+
+.title-a h1, .title-b h1 {
+    font-size: 14px;
+    font-family: var(--font-heading);
+    letter-spacing: 600;
+    line-height: 86%;
+    font-stretch: 102%;
+    background: linear-gradient(45deg, var(--accent-color), var(--accent-color-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(192, 192, 192, 0.3);
+    pointer-events: none;
+    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 作品轮播 */
+.works-section {
+    padding: 5rem 1rem;
+    background: var(--primary-bg);
+}
+
+.swiper {
+    width: 100%;
+    height: 70vh;  /* 调整为视窗高度的70% */
+    max-height: 800px;  /* 设置最大高度 */
+}
+
+.swiper-slide {
+    position: relative;
+    overflow: hidden;
+    width: 80%;
+    height: 100%;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+.swiper-slide-active {
+    opacity: 1;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.swiper-slide:hover img {
+    transform: scale(1.05);
+}
+
+/* 轮播导航按钮样式 */
+.swiper-button-next,
+.swiper-button-prev {
+    color: var(--accent-color);
+    transition: color 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    color: var(--accent-color-hover);
+}
+
+.swiper-pagination-bullet {
+    background: var(--accent-color);
+    opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+    opacity: 1;
+}
+
+/* 社交媒体 */
+footer {
+    padding: 3rem 1rem;
+    background: var(--primary-bg);
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.social-icon {
+    color: var(--text-color);
+    font-size: 2rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.social-icon:hover {
+    color: var(--accent-color-hover);
+    transform: translateY(-5px);
+}
+
+.xiaohongshu {
+    color: var(--text-color);
+}
+
+.xiaohongshu svg {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+/* 动画 */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes skillProgress {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: calc(5px * 2.5);
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .swiper {
+        height: 50vh;
+    }
+
+    .swiper-slide {
+        width: 90%;
+    }
+}
+
+/* 滚动动画类 */
+[data-aos] {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* PDF Modal Styles */
+.pdf-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+}
+
+.pdf-loading {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    z-index: 1002;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.pdf-modal-content {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    margin: 2% auto;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    color: silver;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 1001;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: white;
+}
+
+.pdf-container {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+
+#pdfViewer {
+    width: 100%;
+    height: 100%;
+}
+
+#pdfViewer .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1a1a1a;
+}
+
+#pdfViewer .swiper-slide canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+#pdfViewer .swiper-button-next,
+#pdfViewer .swiper-button-prev {
+    color: silver;
+}
+
+#pdfViewer .swiper-pagination-bullet {
+    background: silver;
+}
+
+#pdfViewer .swiper-pagination-bullet-active {
+    background: white;
+}
+
+.chain-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999;
+    overflow: visible;
+}
+
+.chain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.chain-paths {
+    filter: drop-shadow(0 0 4px rgba(192, 192, 192, 0.8));
+}
+
+.chain-path {
+    stroke-dasharray: 4 2;
+    stroke-width: 1.5;
+    stroke: rgba(192, 192, 192, 0.8);
+    fill: none;
+    animation: chainDash 1s linear infinite;
+}
+
+@keyframes chainDash {
+    to {
+        stroke-dashoffset: -6;
+    }
+} 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人网站</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS for scroll animations -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <!-- Swiper for carousel -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // 确保PDF.js正确加载
+        if (typeof pdfjsLib === 'undefined') {
+            console.error('PDF.js failed to load');
+        }
+    </script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 鼠标跟随效果 -->
+    <div class="cursor-follower"></div>
+
+    <!-- PDF Modal -->
+    <div id="pdfModal" class="pdf-modal">
+        <div class="pdf-modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="pdf-container">
+                <div id="pdfViewer" class="swiper">
+                    <div class="swiper-wrapper" id="pdfPages"></div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="logo" lang="en">mrs.steadyrockerson</div>
+        <div class="nav-links">
+            <a href="#about" class="draggable">关于我</a>
+            <div class="chain-container">
+                <svg class="chain" width="100%" height="100%">
+                    <g class="chain-paths">
+                        <path class="chain-path active" stroke-width="1.5" fill="none"></path>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首屏区域 -->
+    <header class="hero">
+        <div class="hero-background">
+            <img src="532.jpg" alt="背景照片">
+            <div class="overlay"></div>
+        </div>
+        <div class="title-a" data-aos="fade-up" style="cursor: pointer;">
+            <h1 lang="en">publicly</h1>
+        </div>
+        <div class="title-b" data-aos="fade-up">
+            <h1 lang="en">decent</h1>
+        </div>
+    </header>
+
+    <!-- 作品轮播 -->
+    <section id="works" class="works-section">
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="WechatIMG33080.jpg" alt="作品展示 1">
+                </div>
+                <div class="swiper-slide">
+                    <img src="WechatIMG33081.jpg" alt="作品展示 2">
+                </div>
+                <div class="swiper-slide">
+                    <img src="WechatIMG33082.jpg" alt="作品展示 3">
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- 社交媒体 -->
+    <footer id="contact">
+        <div class="social-links">
+            <a href="#" class="social-icon"><i class="fab fa-weixin"></i></a>
+            <a href="#" class="social-icon xiaohongshu">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.9401 15.2534H15.2629L15.7646 16.7542H12.9401V18.7549C12.9401 18.7549 15.0125 18.7549 15.2629 18.7549C15.5133 18.7549 16.0151 16.7542 16.0151 16.7542L16.7674 15.2534C16.7674 15.2534 16.7674 13.7527 16.2657 13.7527C15.764 13.7527 12.9401 13.7527 12.9401 13.7527V15.2534Z"/>
+                    <path d="M8.92577 16.7542L9.42747 18.7549H11.4308V16.7542H8.92577Z"/>
+                    <path d="M8.92577 13.7527H11.4308V15.2534H8.92577V13.7527Z"/>
+                    <path d="M7.17276 13.7527V18.7549H8.17616L8.67786 16.7542V15.2534V13.7527H7.17276Z"/>
+                    <path d="M16.7674 18.7549H17.7708V13.7527H16.7674V15.2534V16.7542V18.7549Z"/>
+                    <path d="M4.47761 5.24481C3.02457 7.07552 2.14844 9.37611 2.14844 11.8768C2.14844 17.8931 7.02559 22.7702 13.0419 22.7702C19.0582 22.7702 23.9353 17.8931 23.9353 11.8768C23.9353 5.86046 19.0582 0.983337 13.0419 0.983337C11.3486 0.983337 9.74199 1.37325 8.29913 2.07486C8.21933 2.11476 8.13953 2.15466 8.05973 2.19456C7.49813 2.51408 6.97643 2.89371 6.49463 3.31324C5.74282 3.99475 5.0709 4.79636 4.51929 5.67747C4.49934 5.71737 4.47938 5.73732 4.47761 5.77722V5.24481Z"/>
+                </svg>
+            </a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // 确保PDF.js worker正确加载
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <script src="script.js"></script>
+</body>
+</html> 
