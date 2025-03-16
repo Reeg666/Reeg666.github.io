@@ -15,6 +15,23 @@
     --gradient-end: #404040;
     --font-heading: 'Goudy Old Style', serif;
     --font-body: 'Goudy Old Style', serif;
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
+}
+
+/* 确保适配刘海屏等特殊设备 */
+@supports (padding-top: env(safe-area-inset-top)) {
+    body {
+        padding-top: var(--safe-area-inset-top);
+        padding-bottom: var(--safe-area-inset-bottom);
+    }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) {
+    .cursor-follower {
+        display: none;
+    }
 }
 
 /* 英文文本样式 */
@@ -302,12 +319,37 @@ footer {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .hero-content h1 {
-        font-size: calc(5px * 2.5);
+    body {
+        font-size: 4px;
     }
 
-    .nav-links {
-        display: none;
+    .nav-links .draggable {
+        font-size: 12px;
+        top: 1.5rem;
+        right: 1.5rem;
+    }
+
+    .logo {
+        font-size: 16px;
+    }
+
+    .title-a h1, .title-b h1 {
+        font-size: 12px;
+    }
+
+    .social-links {
+        gap: 2rem;
+    }
+
+    .social-icon {
+        font-size: 1.5rem;
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .xiaohongshu svg {
+        width: 2rem;
+        height: 2rem;
     }
 
     .swiper {
@@ -316,6 +358,56 @@ footer {
 
     .swiper-slide {
         width: 90%;
+    }
+}
+
+/* 平板设备优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    body {
+        font-size: 4.5px;
+    }
+
+    .nav-links .draggable {
+        font-size: 13px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .swiper {
+        height: 60vh;
+    }
+
+    .swiper-slide {
+        width: 85%;
+    }
+}
+
+/* 触摸事件优化 */
+@media (pointer: coarse) {
+    .nav-links .draggable {
+        cursor: move;
+        touch-action: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    .swiper-slide {
+        touch-action: pan-y pinch-zoom;
+    }
+}
+
+/* iOS Safari 特定优化 */
+@supports (-webkit-touch-callout: none) {
+    .hero {
+        height: -webkit-fill-available;
+    }
+
+    .swiper {
+        height: -webkit-fill-available;
+        max-height: 70vh;
     }
 }
 
