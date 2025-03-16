@@ -289,15 +289,6 @@ footer {
     transform: translateY(-5px);
 }
 
-.xiaohongshu {
-    color: var(--text-color);
-}
-
-.xiaohongshu svg {
-    width: 2.5rem;
-    height: 2.5rem;
-}
-
 /* 动画 */
 @keyframes rotate {
     from {
@@ -343,11 +334,6 @@ footer {
 
     .social-icon {
         font-size: 1.5rem;
-        width: 2rem;
-        height: 2rem;
-    }
-
-    .xiaohongshu svg {
         width: 2rem;
         height: 2rem;
     }
