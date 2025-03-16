@@ -84,21 +84,65 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// 技能条动画
-const observerOptions = {
-    threshold: 0.5
+// 创建通用的 Intersection Observer
+const commonObserverOptions = {
+    threshold: 0.3
 };
 
-const observer = new IntersectionObserver((entries) => {
+const commonObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.classList.add('aos-animate');
+            entry.target.classList.add('visible');
+            
+            // 如果是视频元素，确保视频播放
+            const video = entry.target.querySelector('video');
+            if (video) {
+                video.play().catch(e => console.log('Video autoplay prevented:', e));
+            }
         }
     });
-}, observerOptions);
+}, commonObserverOptions);
 
-document.querySelectorAll('.skill-progress').forEach(skill => {
-    observer.observe(skill);
+// 观察技能条和 GT 框架
+document.querySelectorAll('.skill-progress, .gt-frame').forEach(element => {
+    commonObserver.observe(element);
+});
+
+// GT Glitch Effect System
+document.querySelectorAll('.gt-frame').forEach(frame => {
+    frame.addEventListener('mousemove', (e) => {
+        const rect = frame.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Convert coordinates to percentages and reduce the effect by half
+        const xPercent = (x / rect.width - 0.5);  // -0.5 to 0.5
+        const yPercent = (y / rect.height - 0.5); // -0.5 to 0.5
+        
+        // Calculate rotation angles (max 5 degrees instead of 10)
+        const rotateY = xPercent * 5;
+        const rotateX = -yPercent * 5;
+        
+        // Update CSS variables with smoother transition
+        frame.style.setProperty('--rotate-x', `${rotateX}deg`);
+        frame.style.setProperty('--rotate-y', `${rotateY}deg`);
+        
+        // Update glitch position with reduced movement
+        const glitch = frame.querySelector('.gt-glitch');
+        if (glitch) {
+            glitch.style.transform = `translate(${xPercent * 2}px, ${yPercent * 2}px) translateZ(20px)`;
+        }
+    });
+    
+    frame.addEventListener('mouseleave', () => {
+        frame.style.setProperty('--rotate-x', '0deg');
+        frame.style.setProperty('--rotate-y', '0deg');
+        
+        const glitch = frame.querySelector('.gt-glitch');
+        if (glitch) {
+            glitch.style.transform = 'translate(0) translateZ(20px)';
+        }
+    });
 });
 
 // Title animation logic
@@ -449,4 +493,67 @@ document.addEventListener('DOMContentLoaded', () => {
     draggable.addEventListener("mousedown", dragStart, false);
     document.addEventListener("mousemove", drag, false);
     document.addEventListener("mouseup", dragEnd, false);
+});
+
+// lt页面交互
+document.addEventListener('DOMContentLoaded', function() {
+    const titleB = document.querySelector('.title-b');
+    const ltPage = document.querySelector('.lt-page');
+    const aboutLink = document.querySelector('.nav-links .draggable');
+    
+    if (titleB && ltPage && aboutLink) {
+        titleB.addEventListener('click', function() {
+            ltPage.classList.add('active');
+            aboutLink.style.opacity = '0';
+            aboutLink.style.visibility = 'hidden';
+        });
+        
+        ltPage.addEventListener('click', function() {
+            ltPage.classList.remove('active');
+            aboutLink.style.opacity = '1';
+            aboutLink.style.visibility = 'visible';
+        });
+    }
+});
+
+// GT页面交互
+document.addEventListener('DOMContentLoaded', () => {
+    const gtFrames = document.querySelectorAll('.gt-frame');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // 如果是视频元素，确保视频播放
+                const video = entry.target.querySelector('video');
+                if (video) {
+                    video.play().catch(e => console.log('Video autoplay prevented:', e));
+                }
+            }
+        });
+    }, {
+        threshold: 0.3
+    });
+
+    gtFrames.forEach(frame => {
+        observer.observe(frame);
+    });
+});
+
+// Intersection Observer for scroll animations
+const observerOptions = {
+    threshold: 0.2
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.gt-frame').forEach(frame => {
+    observer.observe(frame);
 }); 

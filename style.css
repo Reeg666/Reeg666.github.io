@@ -4,6 +4,8 @@
     font-stretch: 102%;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap');
+
 /* 全局样式 */
 :root {
     --primary-bg: #121212;
@@ -289,6 +291,15 @@ footer {
     transform: translateY(-5px);
 }
 
+.xiaohongshu {
+    color: var(--text-color);
+}
+
+.xiaohongshu svg {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
 /* 动画 */
 @keyframes rotate {
     from {
@@ -338,12 +349,30 @@ footer {
         height: 2rem;
     }
 
+    .xiaohongshu svg {
+        width: 2rem;
+        height: 2rem;
+    }
+
     .swiper {
         height: 50vh;
     }
 
     .swiper-slide {
         width: 90%;
+    }
+
+    .poster {
+        width: 40%;
+        height: 60vh;
+    }
+
+    .lt-page.active .poster-left {
+        margin-left: 5%;
+    }
+
+    .lt-page.active .poster-right {
+        margin-right: 5%;
     }
 }
 
@@ -533,5 +562,617 @@ footer {
 @keyframes chainDash {
     to {
         stroke-dashoffset: -6;
+    }
+}
+
+/* lt页样式 */
+.lt-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #000000;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+    overflow: hidden;
+    transform: translateZ(0);
+    will-change: opacity, visibility;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 预加载状态 */
+.lt-page-preload {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.lt-page.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.lt-page .chandelier-light {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.lt-page .light-cone {
+    position: absolute;
+    top: -50%;
+    left: 30%;
+    width: 40%;
+    height: 200%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.05) 30%,
+        transparent 70%
+    );
+    filter: blur(20px);
+    mix-blend-mode: screen;
+    animation: lynchianLight 20s ease-in-out infinite;
+    transform-origin: center;
+    z-index: 3;
+    opacity: 0.7;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+.lt-page .light-beam {
+    position: absolute;
+    top: 20%;
+    right: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.05) 40%,
+        transparent 70%
+    );
+    filter: blur(15px);
+    mix-blend-mode: screen;
+    animation: lynchianBeam 15s ease-in-out infinite alternate;
+    transform-origin: center;
+    z-index: 3;
+    opacity: 0.5;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+.lt-page .light-sparkles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.08) 0%, transparent 15%),
+        radial-gradient(circle at 20% 70%, rgba(255, 255, 255, 0.12) 0%, transparent 25%);
+    mix-blend-mode: screen;
+    animation: lynchianSparkle 10s ease-in-out infinite;
+    z-index: 3;
+    opacity: 0.6;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+@keyframes lynchianLight {
+    0%, 100% {
+        opacity: 0.7;
+        transform: rotate(-15deg) scale(1);
+    }
+    25% {
+        opacity: 0.3;
+        transform: rotate(5deg) scale(1.2);
+    }
+    50% {
+        opacity: 0.8;
+        transform: rotate(-10deg) scale(0.9);
+    }
+    75% {
+        opacity: 0.4;
+        transform: rotate(8deg) scale(1.1);
+    }
+}
+
+@keyframes lynchianBeam {
+    0% {
+        opacity: 0.3;
+        transform: rotate(-5deg) translateX(-10%) scale(0.9);
+    }
+    50% {
+        opacity: 0.7;
+        transform: rotate(8deg) translateX(5%) scale(1.1);
+    }
+    100% {
+        opacity: 0.4;
+        transform: rotate(-3deg) translateX(-8%) scale(1);
+    }
+}
+
+@keyframes lynchianSparkle {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+    25% {
+        opacity: 0.6;
+        transform: scale(1.05);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(0.95);
+    }
+    75% {
+        opacity: 0.7;
+        transform: scale(1.02);
+    }
+}
+
+/* lt页海报样式 */
+.poster-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    will-change: transform;
+    -webkit-font-smoothing: antialiased;
+}
+
+.poster {
+    position: relative;
+    width: 30%;
+    height: 70vh;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: transform 0.6s cubic-bezier(0.215, 0.61, 0.355, 1),
+                opacity 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+    overflow: hidden;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.poster-left {
+    margin-left: -100%;
+    transform: translateX(-50px) translateZ(0);
+}
+
+.poster-right {
+    margin-right: -100%;
+    transform: translateX(50px) translateZ(0);
+}
+
+.lt-page.active .poster-left {
+    margin-left: 10%;
+    opacity: 1;
+    transform: translateX(0) translateZ(0);
+    transition-delay: 0.3s;
+}
+
+.lt-page.active .poster-right {
+    margin-right: 10%;
+    opacity: 1;
+    transform: translateX(0) translateZ(0);
+    transition-delay: 0.6s;
+}
+
+.poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0.9) contrast(1.1);
+    transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1),
+                filter 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.poster::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.05),
+        transparent
+    );
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0);
+}
+
+.poster:hover::before {
+    opacity: 1;
+}
+
+.poster:hover img {
+    transform: scale(1.02) translateZ(0);
+    filter: brightness(1) contrast(1.05);
+}
+
+/* 优化光影动画性能 */
+.lt-page .light-cone,
+.lt-page .light-beam,
+.lt-page .light-sparkles {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    -webkit-font-smoothing: antialiased;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+/* gt页样式 */
+.gt-page {
+    min-height: 100vh;
+    background-color: #000000;
+    padding: 2rem 0;
+}
+
+.gt-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.gt-frame {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(50px) perspective(1000px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    background-color: #000000;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.gt-frame.visible {
+    opacity: 1;
+    transform: translateY(0) perspective(1000px);
+}
+
+/* Base image/video styles */
+.gt-frame img,
+.gt-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.5) contrast(1.2);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    will-change: transform, filter;
+}
+
+/* Glitch effect layers */
+.gt-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    background-position: center;
+    background-size: cover;
+    mix-blend-mode: difference;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateZ(20px);
+    will-change: transform, opacity;
+}
+
+.gt-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 70%
+    );
+    mix-blend-mode: overlay;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+    transform: translateZ(10px);
+}
+
+/* Noise texture */
+.gt-noise {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/png;base64,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');
+    opacity: 0;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    transform: translateZ(30px);
+}
+
+/* Hover effects */
+.gt-frame:hover {
+    transform: perspective(1000px) rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+}
+
+.gt-frame:hover img,
+.gt-frame:hover video {
+    transform: scale(1.05) translateZ(20px);
+    filter: grayscale(0) contrast(1.3);
+}
+
+.gt-frame:hover .gt-glitch {
+    opacity: 0.2;
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) infinite;
+}
+
+.gt-frame:hover::before {
+    opacity: 1;
+}
+
+.gt-frame:hover .gt-noise {
+    opacity: 0.05;
+    animation: noise 0.5s steps(10) infinite;
+}
+
+/* Glitch animation */
+@keyframes glitch {
+    0% {
+        transform: translate(0) translateZ(20px);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+    20% {
+        transform: translate(-5px, 5px) translateZ(20px);
+        clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+    }
+    40% {
+        transform: translate(5px, -5px) translateZ(20px);
+        clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 95%);
+    }
+    60% {
+        transform: translate(-3px, 3px) translateZ(20px);
+        clip-path: polygon(0 0, 95% 5%, 100% 95%, 5% 100%);
+    }
+    80% {
+        transform: translate(3px, -3px) translateZ(20px);
+        clip-path: polygon(5% 5%, 100% 0, 95% 95%, 0 100%);
+    }
+    100% {
+        transform: translate(0) translateZ(20px);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+/* Noise animation */
+@keyframes noise {
+    0% { transform: translateZ(30px) translate(0, 0); }
+    10% { transform: translateZ(30px) translate(-1%, -1%); }
+    20% { transform: translateZ(30px) translate(1%, 1%); }
+    30% { transform: translateZ(30px) translate(-2%, -2%); }
+    40% { transform: translateZ(30px) translate(2%, 2%); }
+    50% { transform: translateZ(30px) translate(-1%, 1%); }
+    60% { transform: translateZ(30px) translate(1%, -1%); }
+    70% { transform: translateZ(30px) translate(-2%, 2%); }
+    80% { transform: translateZ(30px) translate(2%, -2%); }
+    90% { transform: translateZ(30px) translate(-1%, -1%); }
+    100% { transform: translateZ(30px) translate(0, 0); }
+}
+
+/* Mouse move 3D effect */
+.gt-frame {
+    --rotate-x: 0deg;
+    --rotate-y: 0deg;
+}
+
+/* gt页文字样式 */
+.gt-text-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 4.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 
+        0 0 20px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+/* 第一个 gt-frame 的特殊样式 */
+.gt-frame:first-child {
+    background-color: #000000;
+}
+
+.gt-frame:first-child .gt-text-overlay {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 
+        0 0 20px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(0, 0, 0, 0.3);
+}
+
+.gt-frame:first-child:hover .gt-text-overlay {
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 
+        0 0 30px rgba(0, 0, 0, 0.7),
+        0 0 60px rgba(0, 0, 0, 0.5);
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.gt-frame.visible .gt-text-overlay {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.gt-frame:hover .gt-text-overlay {
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 
+        0 0 30px rgba(0, 0, 0, 0.7),
+        0 0 60px rgba(0, 0, 0, 0.5);
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .gt-container {
+        padding: 0 1rem;
+    }
+
+    .gt-frame {
+        height: 50vh;
+    }
+}
+
+/* gt-frame 特定图片样式 */
+.gt-frame:nth-child(2) {
+    position: relative;
+    overflow: hidden;
+}
+
+.gt-frame:nth-child(2) img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: #000000;
+    padding: 2rem;
+}
+
+/* 第二图块的 Matty 效果 */
+.gt-frame:nth-child(2) .gt-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    background-position: center;
+    background-size: cover;
+    mix-blend-mode: difference;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.gt-frame:nth-child(2):hover .gt-glitch {
+    opacity: 0.2;
+}
+
+/* 移除其他图块的 gt-glitch 效果 */
+.gt-frame:not(:nth-child(2)) .gt-glitch {
+    display: none;
+}
+
+/* gt-frame video styles */
+.gt-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.5) contrast(1.2);
+    transition: all 0.5s ease;
+    display: block;
+    background-color: #000000;
+}
+
+.gt-frame:hover video {
+    filter: grayscale(0) contrast(1);
+    transform: scale(1.02);
+}
+
+/* 第二和第三图块的 Matty 效果 */
+.gt-frame:nth-child(2) .gt-glitch,
+.gt-frame:nth-child(3) .gt-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    background-position: center;
+    background-size: cover;
+    mix-blend-mode: difference;
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) infinite;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.gt-frame:nth-child(2):hover .gt-glitch,
+.gt-frame:nth-child(3):hover .gt-glitch {
+    opacity: 0.1;
+}
+
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-5px, 5px);
+    }
+    40% {
+        transform: translate(-5px, -5px);
+    }
+    60% {
+        transform: translate(5px, 5px);
+    }
+    80% {
+        transform: translate(5px, -5px);
+    }
+    100% {
+        transform: translate(0);
     }
 } 
