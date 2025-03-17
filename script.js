@@ -219,150 +219,199 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeTitles();
 });
 
-// PDF Viewer initialization
-if (typeof pdfjsLib === 'undefined') {
-    console.error('PDF.js library not loaded');
-} else {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-}
+// PDF Viewer System
+let pdfDoc = null;
+let pageNum = 1;
+let pdfViewer = null;
+let isViewerInitialized = false;
 
-let pdfSwiper = null;
-let isInitialized = false;
-
-function initializePdfViewer() {
-    if (isInitialized) return;
+async function initializePdfViewer() {
+    if (isViewerInitialized) return;
     
-    // 检查必要的DOM元素
-    const modal = document.getElementById('pdfModal');
-    const closeBtn = document.querySelector('.close-modal');
-    const titleA = document.querySelector('.title-a');
-    const pdfContainer = document.querySelector('.pdf-container');
-    const pdfPages = document.getElementById('pdfPages');
-
-    if (!modal || !closeBtn || !titleA || !pdfContainer || !pdfPages) {
-        console.error('Missing required DOM elements for PDF viewer');
+    const pdfjsLib = window.pdfjsLib;
+    if (!pdfjsLib) {
+        console.error('PDF.js library not loaded');
         return;
     }
 
-    // Close modal when clicking the close button or outside the modal
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = "none";
-    });
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = "none";
+    const publiclyButton = document.querySelector('.title-a');
+    const pdfModal = document.querySelector('#pdfModal');
+    const closeButton = document.querySelector('.close-modal');
+    
+    if (!publiclyButton || !pdfModal || !closeButton) {
+        console.error('Required PDF viewer elements not found:', {
+            publiclyButton: !!publiclyButton,
+            pdfModal: !!pdfModal,
+            closeButton: !!closeButton
+        });
+        return;
+    }
+
+    publiclyButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log('Publicly button clicked');
+        
+        try {
+            pdfModal.style.display = 'flex';
+            
+            if (!pdfDoc) {
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.className = 'pdf-loading';
+                loadingIndicator.textContent = 'Loading PDF...';
+                const modalContent = pdfModal.querySelector('.pdf-modal-content');
+                modalContent.appendChild(loadingIndicator);
+
+                console.log('Attempting to load PDF...');
+                
+                try {
+                    const pdfPath = 'assets/portfolio.pdf';
+                    console.log('Loading PDF from:', pdfPath);
+                    
+                    const response = await fetch(pdfPath);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const pdfData = await response.arrayBuffer();
+                    console.log('PDF data received, size:', pdfData.byteLength);
+                    
+                    // Load PDF using PDF.js
+                    const loadingTask = pdfjsLib.getDocument({data: pdfData});
+                    console.log('PDF loading task created');
+                    
+                    pdfDoc = await loadingTask.promise;
+                    console.log('PDF loaded successfully:', pdfDoc.numPages, 'pages');
+                    
+                    await loadPdf(pdfDoc);
+                    
+                    if (modalContent.contains(loadingIndicator)) {
+                        modalContent.removeChild(loadingIndicator);
+                    }
+                } catch (error) {
+                    console.error('Error loading PDF:', error);
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'pdf-error';
+                    errorMessage.innerHTML = `
+                        <h3>Unable to load PDF</h3>
+                        <p>Error details: ${error.message}</p>
+                        <p>Please ensure the PDF file exists at: assets/portfolio.pdf</p>
+                    `;
+                    
+                    const modalContent = pdfModal.querySelector('.pdf-modal-content');
+                    modalContent.innerHTML = '';
+                    modalContent.appendChild(errorMessage);
+                    modalContent.appendChild(closeButton);
+                }
+            }
+        } catch (error) {
+            console.error('Error in click handler:', error);
         }
     });
 
-    // Add loading indicator
-    const loadingIndicator = document.createElement('div');
-    loadingIndicator.className = 'pdf-loading';
-    loadingIndicator.innerHTML = '加载中...';
-    modal.appendChild(loadingIndicator);
+    closeButton.addEventListener('click', () => {
+        pdfModal.style.display = 'none';
+    });
 
-    // Initialize PDF viewer
-    async function loadPdf() {
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+        if (e.target === pdfModal) {
+            pdfModal.style.display = 'none';
+        }
+    });
+
+    isViewerInitialized = true;
+    console.log('PDF viewer initialized');
+}
+
+async function loadPdf(pdf) {
+    console.log('Starting to load PDF pages');
+    const pdfContainer = document.querySelector('.pdf-container');
+    if (!pdfContainer) {
+        console.error('PDF container not found');
+        return;
+    }
+
+    // Clear existing pages
+    pdfContainer.innerHTML = `
+        <div id="pdfViewer" class="swiper">
+            <div class="swiper-wrapper" id="pdfPages"></div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    `;
+
+    const pdfPages = document.getElementById('pdfPages');
+    if (!pdfPages) {
+        console.error('PDF pages container not found');
+        return;
+    }
+
+    // Render all pages
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        console.log(`Rendering page ${pageNum}`);
+        const page = await pdf.getPage(pageNum);
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        
+        // Calculate scale to fit the container
+        const containerWidth = pdfContainer.clientWidth - 40;
+        const containerHeight = pdfContainer.clientHeight - 40;
+        const viewport = page.getViewport({ scale: 1.0 });
+        
+        const scaleX = containerWidth / viewport.width;
+        const scaleY = containerHeight / viewport.height;
+        const scale = Math.min(scaleX, scaleY);
+        
+        const scaledViewport = page.getViewport({ scale });
+        
+        canvas.height = scaledViewport.height;
+        canvas.width = scaledViewport.width;
+
         try {
-            loadingIndicator.style.display = 'block';
-            modal.style.display = "block";
+            await page.render({
+                canvasContext: context,
+                viewport: scaledViewport
+            }).promise;
             
-            // 加载PDF文件
-            const pdfPath = 'assets/portfolio.pdf';
-            
-            // 首先检查文件是否存在
-            try {
-                const response = await fetch(pdfPath);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const pdfData = await response.arrayBuffer();
-                
-                // 使用arrayBuffer加载PDF
-                const loadingTask = pdfjsLib.getDocument({data: pdfData});
-                const pdf = await loadingTask.promise;
-                const pagesContainer = document.getElementById('pdfPages');
-                pagesContainer.innerHTML = '';
-
-                // Create slides for each page
-                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                    const slide = document.createElement('div');
-                    slide.className = 'swiper-slide';
-                    pagesContainer.appendChild(slide);
-
-                    const page = await pdf.getPage(pageNum);
-                    // 计算适合容器的缩放比例
-                    const containerWidth = pdfContainer.clientWidth - 40;
-                    const containerHeight = pdfContainer.clientHeight - 40;
-                    const viewport = page.getViewport({ scale: 1.0 });
-                    
-                    // 计算缩放比例
-                    const scaleX = containerWidth / viewport.width;
-                    const scaleY = containerHeight / viewport.height;
-                    const scale = Math.min(scaleX, scaleY);
-                    
-                    // 使用计算出的缩放比例
-                    const scaledViewport = page.getViewport({ scale });
-                    
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
-                    canvas.height = scaledViewport.height;
-                    canvas.width = scaledViewport.width;
-
-                    const renderContext = {
-                        canvasContext: context,
-                        viewport: scaledViewport
-                    };
-
-                    await page.render(renderContext).promise;
-                    slide.appendChild(canvas);
-                }
-
-                // Initialize or update Swiper
-                if (pdfSwiper) {
-                    pdfSwiper.destroy();
-                }
-                
-                pdfSwiper = new Swiper('#pdfViewer', {
-                    direction: 'horizontal',
-                    loop: false,
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable: true
-                    },
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev'
-                    }
-                });
-
-            } catch (error) {
-                console.error('Error loading PDF:', error);
-                if (error.message.includes('HTTP error')) {
-                    alert('无法找到PDF文件，请确保文件已正确放置在assets目录中');
-                } else {
-                    alert('PDF文件加载失败：' + error.message);
-                }
-                throw error; // 继续向上传播错误
-            }
-
+            slide.appendChild(canvas);
+            pdfPages.appendChild(slide);
         } catch (error) {
-            console.error('Error in PDF viewer:', error);
-            alert('PDF查看器初始化失败，请刷新页面重试');
-        } finally {
-            loadingIndicator.style.display = 'none';
+            console.error(`Error rendering page ${pageNum}:`, error);
         }
     }
 
-    // Add click event to title-a
-    titleA.addEventListener('click', () => {
-        loadPdf();
-    });
+    console.log('All pages rendered, initializing Swiper');
 
-    isInitialized = true;
+    // Initialize Swiper
+    if (window.Swiper) {
+        if (pdfViewer) {
+            pdfViewer.destroy();
+        }
+        pdfViewer = new Swiper('#pdfViewer', {
+            direction: 'horizontal',
+            loop: false,
+            pagination: {
+                el: '.swiper-pagination',
+                type: 'fraction'
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev'
+            }
+        });
+        console.log('Swiper initialized');
+    } else {
+        console.error('Swiper not found');
+    }
 }
 
-// Initialize when DOM is ready
+// Initialize PDF viewer when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializePdfViewer);
 
 // 拖拽功能
